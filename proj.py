@@ -53,6 +53,9 @@ def stem_lem(line):
     stemmer = nltk.stem.snowball.EnglishStemmer()
     p_line = [stemmer.stem(word) for word in line]
 
+    #lemmatizer = nltk.WordNetLemmatizer()
+    #p_line = [lemmatizer.lemmatize(word) for word in line]
+
     return p_line
 
 def evaluate(solution, output):
@@ -171,13 +174,13 @@ def train_data(train_set, labels):
     #classifier = KNeighborsClassifier(n_neighbors=5)
     #classifier.fit(trainVectorizerArray, labels)
 
-    cv = ShuffleSplit(n_splits=5, test_size=0.3, random_state=0)
+    #cv = ShuffleSplit(n_splits=5, test_size=0.3, random_state=0)
 
     #test_parameters(trainVectorizerArray, labels, cv)
 
     #rf_scores = cross_val_score(random_forest, trainVectorizerArray, labels, cv=cv)
     #nb_scores = cross_val_score(naive_bayes, trainVectorizerArray, labels, cv=cv)
-    svm_scores = cross_val_score(s_vm, trainVectorizerArray, labels, cv=cv)
+    svm_scores = cross_val_score(s_vm, trainVectorizerArray, labels, cv=5)
 
     #print("Random Forest: " + str(rf_scores.mean()))
     #print("Naive Bayes: " + str(nb_scores.mean()))
