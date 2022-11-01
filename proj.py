@@ -2,7 +2,6 @@ import sys
 import os
 import re
 import string
-from tkinter import N
 import nltk
 import spacy
 import numpy as np
