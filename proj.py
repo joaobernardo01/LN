@@ -36,7 +36,7 @@ stop_words = ['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', '
             "who's", 'whom', 'why', "why's", 'with', "won't", 'would', "wouldn't", 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours',
             'yourself', 'yourselves']
 
-stop_words_ignored = ['all', 'and', 'again', 'any', "aren't", "can't", 'cannot', "couldn't", "didn't", "doesn't", "don't", "few", "hadn't", "hasn't", "haven't", 'more', 'most',
+stop_words_ignored = ['all', 'and', 'again', 'any', "aren't", 'but', "can't", 'cannot', "couldn't", "didn't", "doesn't", "don't", "few", "hadn't", "hasn't", "haven't", "isn't", 'more', 'most',
                     "mustn't", 'nor', 'not', 'no', 'off', 'or' 'same', "shan't", "shouldn't", 'some', 'such', 'too', 'very', "wasn't", "weren't", "won't", "wouldn't"]
 
 vectorizer = None
@@ -159,11 +159,11 @@ def train_data(train_set, labels):
     vectorizer = TfidfVectorizer()
     trainVectorizerArray = vectorizer.fit_transform(train_set)
     
-    random_forest = RandomForestClassifier(n_estimators=200, max_depth=25, random_state=0)
-    random_forest.fit(trainVectorizerArray, labels)
+    #random_forest = RandomForestClassifier(n_estimators=200, max_depth=25, random_state=0)
+    #random_forest.fit(trainVectorizerArray, labels)
 
-    naive_bayes = MultinomialNB(alpha=3.5, fit_prior=True)
-    naive_bayes.fit(trainVectorizerArray, labels)
+    #naive_bayes = MultinomialNB(alpha=3.5, fit_prior=True)
+    #naive_bayes.fit(trainVectorizerArray, labels)
 
     s_vm = svm.SVC(kernel='rbf', C=1, gamma=1.0)
     s_vm.fit(trainVectorizerArray, labels)
@@ -175,12 +175,12 @@ def train_data(train_set, labels):
 
     #test_parameters(trainVectorizerArray, labels, cv)
 
-    rf_scores = cross_val_score(random_forest, trainVectorizerArray, labels, cv=cv)
-    nb_scores = cross_val_score(naive_bayes, trainVectorizerArray, labels, cv=cv)
+    #rf_scores = cross_val_score(random_forest, trainVectorizerArray, labels, cv=cv)
+    #nb_scores = cross_val_score(naive_bayes, trainVectorizerArray, labels, cv=cv)
     svm_scores = cross_val_score(s_vm, trainVectorizerArray, labels, cv=cv)
 
-    print("Random Forest: " + str(rf_scores.mean()))
-    print("Naive Bayes: " + str(nb_scores.mean()))
+    #print("Random Forest: " + str(rf_scores.mean()))
+    #print("Naive Bayes: " + str(nb_scores.mean()))
     print("SVM: " + str(svm_scores.mean()))
     
 
@@ -245,15 +245,16 @@ def classify_dummy(test_set):
         #result_file += get_cosine_sim(cosine_set, vec) + "\n"
 
         testVectorizerArray = vectorizer.transform([review])
-        rf_predict = random_forest.predict(testVectorizerArray)[0]
-        nv_predict = naive_bayes.predict(testVectorizerArray)[0]
+        #rf_predict = random_forest.predict(testVectorizerArray)[0]
+        #nv_predict = naive_bayes.predict(testVectorizerArray)[0]
         svm_predict = s_vm.predict(testVectorizerArray)[0]
-
+        '''
         if nv_predict == rf_predict and nv_predict != svm_predict:
             result_file += nv_predict + "\n"
         else:
             result_file += svm_predict + "\n"
-
+        '''
+        result_file += svm_predict + "\n"
     #print(result_file)
 
     return result_file
@@ -270,13 +271,13 @@ def main():
         print("Invalid usage.\nRun \"python reviews.py -test <test.txt> -train <train.txt>\" to run a new test.")
 
     p_reviews, labels = preprocess_data(train_file_name)
-    new_train, test, train_labels, test_labels = train_test_split(p_reviews, labels, test_size=0.30, random_state=0)
-    train_data(new_train, train_labels)
-    result_file = classify_dummy(test)
-    evaluate(test_labels, result_file)
-    evaluate_labels(test_labels, result_file)
+    #new_train, test, train_labels, test_labels = train_test_split(p_reviews, labels, test_size=0.30, random_state=0)
+    #train_data(new_train, train_labels)
+    #result_file = classify_dummy(test)
+    #evaluate(test_labels, result_file)
+    #evaluate_labels(test_labels, result_file)
 
-    #train_data(p_reviews, labels)
+    train_data(p_reviews, labels)
     #result_file = classify(test_file_name)
 
     #evaluate(labels, result_file)
