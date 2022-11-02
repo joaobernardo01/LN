@@ -100,7 +100,7 @@ def evaluate_labels(solution, output):
         if label not in accuracy:
             accuracy[label] = 0
         accuracy[label] = (correct_labels[label]/n_labels[label])*100
-        #print('Accuracy for label {}: {:.3f}'.format(label, accuracy[label]))
+        print('Accuracy for label {}: {:.3f}'.format(label, accuracy[label]))
 
     return 
 
@@ -178,17 +178,14 @@ def train_data(train_set, labels):
 
     #test_parameters(trainVectorizerArray, labels, cv)
 
-    #rf_scores = cross_val_score(random_forest, trainVectorizerArray, labels, cv=cv)
-    #nb_scores = cross_val_score(naive_bayes, trainVectorizerArray, labels, cv=cv)
-    svm_scores = cross_val_score(s_vm, trainVectorizerArray, labels, cv=5)
+    #rf_scores = cross_val_score(random_forest, trainVectorizerArray, labels, cv=5)
+    #nb_scores = cross_val_score(naive_bayes, trainVectorizerArray, labels, cv=5)
+    #svm_scores = cross_val_score(s_vm, trainVectorizerArray, labels, cv=5)
 
     #print("Random Forest: " + str(rf_scores.mean()))
     #print("Naive Bayes: " + str(nb_scores.mean()))
-    print("SVM: " + str(svm_scores.mean()))
+    #print("SVM: " + str(svm_scores.mean()))
     
-
-    #vec = vectorizer.transform([phrase]).toarray()
-    #result_file += get_cosine_sim(cosine_set, vec) + "\n"
 
 def test_parameters(X,y,cv_p):
     grid = GridSearchCV(
@@ -204,7 +201,7 @@ def test_parameters(X,y,cv_p):
     grid.fit(X,y)
 
     #print the best parameters from all possible combinations
-    print("best parameters are: ", grid.best_params_)
+    #print("best parameters are: ", grid.best_params_)
 
 def classify(test):
     test_file = open(test, 'r') 
@@ -212,7 +209,7 @@ def classify(test):
     test_file.close()
 
     global vectorizer
-    global classifier
+    global s_vm
 
     test_set = []
     result_file = ""
@@ -227,8 +224,8 @@ def classify(test):
         #result_file += get_cosine_sim(cosine_set, vec) + "\n"
 
         testVectorizerArray = vectorizer.transform([p_review])
-        aux_predict = classifier.predict(testVectorizerArray)[0]
-        result_file += aux_predict + "\n"
+        aux_predict = s_vm.predict(testVectorizerArray)[0]
+        result_file += aux_predict + '\n'
 
     print(result_file)
 
@@ -257,16 +254,16 @@ def classify_dummy(test_set):
         else:
             result_file += svm_predict + "\n"
         '''
-        result_file += svm_predict + "\n"
-    #print(result_file)
+        result_file += svm_predict + '\n'
+    print(result_file)
 
     return result_file
     
 def main():
-    if len(sys.argv) == 3:
-        train_file_name = sys.argv[2]
+    #if len(sys.argv) == 3:
+    #    train_file_name = sys.argv[2]
 
-    elif len(sys.argv) == 5:
+    if len(sys.argv) == 5:
         test_file_name = sys.argv[2]
         train_file_name = sys.argv[4]
 
@@ -274,14 +271,19 @@ def main():
         print("Invalid usage.\nRun \"python reviews.py -test <test.txt> -train <train.txt>\" to run a new test.")
 
     p_reviews, labels = preprocess_data(train_file_name)
-    #new_train, test, train_labels, test_labels = train_test_split(p_reviews, labels, test_size=0.30, random_state=0)
+    
+    #new_train, test, train_labels, test_labels = train_test_split(p_reviews, labels, test_size=0.20, random_state=0)
     #train_data(new_train, train_labels)
     #result_file = classify_dummy(test)
+
     #evaluate(test_labels, result_file)
     #evaluate_labels(test_labels, result_file)
 
+    #f_score = f1_score(test_labels, result_file.splitlines(), average='weighted')
+    #print("f_score:" + str(f_score))
+
     train_data(p_reviews, labels)
-    #result_file = classify(test_file_name)
+    result_file = classify(test_file_name)
 
     #evaluate(labels, result_file)
     #evaluate_labels(test_set_labels, result_file)
@@ -290,6 +292,7 @@ def main():
     #print("f_score:" + f_score)
     return 0
 
-main()
+if __name__ == "__main__":
+    main()
  
 
